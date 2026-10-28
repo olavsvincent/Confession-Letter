@@ -1,0 +1,415 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Letter for You 💌</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  font-family: Georgia, "Times New Roman", serif;
+  background:
+    radial-gradient(ellipse at 50% 80%, #4b203d, transparent 60%),
+    linear-gradient(145deg, #0b1024, #24152e);
+  color: #fff0f5;
+}
+
+.stars {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(2px 2px at 15% 20%, white 99%, transparent),
+    radial-gradient(2px 2px at 70% 15%, #ffb8d4 99%, transparent),
+    radial-gradient(1px 1px at 35% 65%, white 99%, transparent),
+    radial-gradient(2px 2px at 85% 75%, #ffd2e5 99%, transparent),
+    radial-gradient(1px 1px at 20% 85%, white 99%, transparent);
+  background-size: 190px 180px;
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  to { opacity: .4; }
+}
+
+.scene {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 500px;
+  padding: 24px;
+  text-align: center;
+}
+
+.top-label {
+  font: 10px Arial, sans-serif;
+  letter-spacing: 5px;
+  color: #ffbad6;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-weight: normal;
+  font-size: clamp(30px, 7vw, 43px);
+  margin-top: 15px;
+}
+
+.subtitle {
+  margin-top: 12px;
+  color: #d7b9d0;
+  font-size: 14px;
+}
+
+.envelope-area {
+  position: relative;
+  height: 260px;
+  margin: 35px auto 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  perspective: 1000px;
+}
+
+.envelope {
+  position: relative;
+  width: min(320px, 85vw);
+  height: 190px;
+  cursor: pointer;
+  filter: drop-shadow(0 20px 30px #0005);
+  transition: transform .5s;
+}
+
+.envelope:hover {
+  transform: translateY(-5px);
+}
+
+.envelope-back {
+  position: absolute;
+  inset: 0;
+  background: #c77b9a;
+  border-radius: 5px;
+}
+
+.letter {
+  position: absolute;
+  z-index: 2;
+  left: 5%;
+  top: 5%;
+  width: 90%;
+  height: 88%;
+  background: #fff6ed;
+  color: #49313c;
+  border-radius: 3px;
+  padding: 24px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 1s cubic-bezier(.2,.8,.2,1);
+}
+
+.letter small {
+  font: 10px Arial, sans-serif;
+  letter-spacing: 3px;
+  color: #b36b89;
+}
+
+.letter strong {
+  margin-top: 12px;
+  font-size: 22px;
+  font-weight: normal;
+}
+
+.letter .heart {
+  margin-top: 12px;
+  color: #d95783;
+  font-size: 26px;
+}
+
+.envelope-front {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: #e5a3bc;
+  clip-path: polygon(0 0, 50% 58%, 100% 0, 100% 100%, 0 100%);
+  border-radius: 4px;
+}
+
+.envelope-flap {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: #f2c0d1;
+  clip-path: polygon(0 0, 100% 0, 50% 60%);
+  transform-origin: top center;
+  transition: transform .7s ease, z-index 0s .35s;
+  backface-visibility: hidden;
+}
+
+.seal {
+  position: absolute;
+  z-index: 6;
+  top: 83px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 25%, #ffb7d0, #b62f61);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 21px;
+  box-shadow: 0 3px 8px #76213d60;
+  transition: opacity .3s, transform .4s;
+}
+
+.envelope.open .envelope-flap {
+  transform: rotateX(180deg);
+  z-index: 1;
+}
+
+.envelope.open .seal {
+  opacity: 0;
+  transform: translateX(-50%) scale(.5);
+}
+
+.envelope.open .letter {
+  transform: translateY(-100px);
+}
+
+.envelope.open {
+  cursor: default;
+}
+
+.hint {
+  font: 11px Arial, sans-serif;
+  letter-spacing: 2px;
+  color: #edbcd2;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  50% { opacity: .45; }
+}
+
+.letter-content {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #090916dd;
+  backdrop-filter: blur(9px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .6s, visibility .6s;
+}
+
+.letter-content.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.paper {
+  position: relative;
+  width: min(440px, 100%);
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 35px 28px;
+  color: #45323b;
+  background:
+    linear-gradient(#fffaf2ee, #fffaf2ee),
+    repeating-linear-gradient(transparent 0 31px, #d7b7c1 32px);
+  border-radius: 4px;
+  box-shadow: 0 20px 70px #0007;
+  text-align: left;
+  transform: translateY(25px) scale(.96);
+  transition: transform .6s;
+}
+
+.letter-content.show .paper {
+  transform: translateY(0) scale(1);
+}
+
+.paper-top {
+  text-align: center;
+  font: 10px Arial, sans-serif;
+  letter-spacing: 4px;
+  color: #b36b89;
+  margin-bottom: 25px;
+}
+
+.paper h2 {
+  text-align: center;
+  font-size: 27px;
+  font-weight: normal;
+  color: #9f4165;
+  margin-bottom: 24px;
+}
+
+.paper p {
+  font-size: 16px;
+  line-height: 1.9;
+  margin-bottom: 17px;
+  white-space: pre-line;
+}
+
+.signature {
+  margin-top: 25px;
+  text-align: right;
+  font-style: italic;
+  color: #9f4165;
+}
+
+.close-button {
+  display: block;
+  margin: 22px auto 0;
+  padding: 11px 22px;
+  border: 1px solid #dba1b9;
+  border-radius: 30px;
+  background: #f4d5e0;
+  color: #60364a;
+  cursor: pointer;
+  font: 12px Arial, sans-serif;
+}
+
+.footer {
+  margin-top: 35px;
+  font: 10px Arial, sans-serif;
+  letter-spacing: 3px;
+  color: #bba3bc;
+}
+
+@media (max-height: 650px) {
+  .envelope-area { margin: 10px auto; height: 230px; }
+  .footer { margin-top: 15px; }
+}
+</style>
+</head>
+
+<body>
+<div class="stars"></div>
+
+<main class="scene">
+  <p class="subtitle">There's something I've been meaning to tell you.</p>
+
+  <div class="envelope-area">
+    <div class="envelope" id="envelope" role="button"
+         tabindex="0" aria-label="Open the letter">
+      <div class="envelope-back"></div>
+
+      <div class="letter">
+        <small>PERSONALLY FOR YOU</small>
+        <span class="heart">♥</span>
+      </div>
+
+      <div class="envelope-front"></div>
+      <div class="envelope-flap"></div>
+      <div class="seal">♥</div>
+    </div>
+  </div>
+
+  <p class="hint" id="hint">CLICK THE ENVELOPE TO OPEN</p>
+</main>
+
+<div class="letter-content" id="letterContent" aria-hidden="true">
+  <article class="paper">
+    <h2>Dear Raiza, ♡</h2>
+
+    <p>I don't really know how to say this, but there's something I've been wanting you to know.</p>
+
+    <p>I like the way you make my heart flutter, even with just a glance. It's amazing how something so simple can make me smile and make my day a little better.</p>
+
+    <p>The funny thing is, we don't even talk, but somehow, those little moments still mean something to me.</p>
+
+    <p>I'm not writing this to pressure you or make things awkward. I just wanted to be honest about what I feel instead of keeping it to myself forever.</p>
+
+    <p>You don't have to give me an answer right away. Whatever you feel, I'll respect it. I'm just glad I found the courage to let you know.</p>
+
+    <p>Thank you for being someone who makes me smile without even trying.</p>
+
+    <p>And lastly, can I ask you to keep this a secret? I'm honestly a bit shy about it. <3 </p>
+
+    <div class="signature">
+      Sincerely,<br>
+      Shane 🌷
+    </div>
+
+    <button class="close-button" id="closeLetter">Fold the letter ♡</button>
+  </article>
+</div>
+
+<script>
+const envelope = document.getElementById("envelope");
+const hint = document.getElementById("hint");
+const letterContent = document.getElementById("letterContent");
+const closeLetter = document.getElementById("closeLetter");
+
+let opened = false;
+
+function openEnvelope() {
+  if (opened) return;
+
+  opened = true;
+  envelope.classList.add("open");
+  hint.textContent = "YOUR LETTER IS WAITING...";
+
+  setTimeout(() => {
+    letterContent.classList.add("show");
+    letterContent.setAttribute("aria-hidden", "false");
+    hint.textContent = "A LITTLE MESSAGE, JUST FOR YOU ♡";
+  }, 1100);
+}
+
+function foldLetter() {
+  letterContent.classList.remove("show");
+  letterContent.setAttribute("aria-hidden", "true");
+
+  setTimeout(() => {
+    envelope.classList.remove("open");
+    opened = false;
+    hint.textContent = "CLICK THE ENVELOPE TO OPEN";
+  }, 500);
+}
+
+envelope.addEventListener("click", openEnvelope);
+
+envelope.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    openEnvelope();
+  }
+});
+
+closeLetter.addEventListener("click", foldLetter);
+
+letterContent.addEventListener("click", (event) => {
+  if (event.target === letterContent) {
+    foldLetter();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && letterContent.classList.contains("show")) {
+    foldLetter();
+  }
+});
+</script>
+</body>
+</html>
